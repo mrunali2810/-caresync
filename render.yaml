@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: hospital-appointment-system
+    env: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn --chdir backend app:app
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
