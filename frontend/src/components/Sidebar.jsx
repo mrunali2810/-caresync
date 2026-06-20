@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   CalendarDays, 
-  FileCode2, 
   LogOut, 
   Activity, 
   UserCheck 
@@ -36,7 +35,6 @@ const Sidebar = () => {
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col h-screen fixed left-0 top-0 shadow-xl border-r border-slate-800 z-30">
-      {/* Brand Logo Header */}
       <div className="p-6 border-b border-slate-800 flex items-center space-x-3 bg-gradient-to-r from-medical-900 to-slate-900">
         <div className="bg-medical-500 p-2 rounded-lg text-white shadow-lg shadow-medical-500/30">
           <Activity className="w-6 h-6 animate-pulse" />
@@ -51,7 +49,6 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Navigation Links */}
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto no-scrollbar">
         {navItems.map((item) => (
           <NavLink
@@ -69,22 +66,8 @@ const Sidebar = () => {
             <span>{item.name}</span>
           </NavLink>
         ))}
-
-        {/* External Link for Swagger API Docs */}
-        <a
-          href="/swagger"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-200"
-        >
-          <FileCode2 className="w-5 h-5 text-indigo-400" />
-          <div className="flex items-center space-x-1">
-            <span>Swagger APIs</span>
-          </div>
-        </a>
       </nav>
 
-      {/* User Info & Logout Footer */}
       <div className="p-4 border-t border-slate-800 bg-slate-950/40">
         <div className="flex items-center space-x-3 p-2 rounded-lg bg-slate-800/40 mb-3">
           <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-medical-400 shadow-inner">

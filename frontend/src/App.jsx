@@ -1,80 +1,72 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Appointments from './pages/Appointments';
 
-// Guard for routes that require an authenticated user
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
+const token = localStorage.getItem('token');
+return token ? children : <Navigate to="/login" replace />;
 };
 
-// Guard for routes that are public-only (e.g. login)
 const PublicRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    return <Navigate to="/dashboard" replace />;
-  }
-  return children;
+const token = localStorage.getItem('token');
+return token ? <Navigate to="/dashboard" replace /> : children;
 };
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* Public Login Route */}
-        <Route 
-          path="/login" 
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } 
-        />
-        
-        {/* Protected Dashboard Route */}
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } 
-        />
-        
-        {/* Protected Appointments Management Route */}
-        <Route 
-          path="/appointments" 
-          element={
-            <ProtectedRoute>
-              <Appointments />
-            </ProtectedRoute>
-          } 
-        />
+return ( <Router> <Routes>
 
-        {/* Fallbacks */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000} 
-        hideProgressBar={false} 
-        newestOnTop 
-        closeOnClick 
-        rtl={false} 
-        pauseOnFocusLoss 
-        draggable 
-        pauseOnHover 
-        theme="light"
-      />
-    </Router>
-  );
+```
+    <Route
+      path="/login"
+      element={
+        <PublicRoute>
+          <Login />
+        </PublicRoute>
+      }
+    />
+
+    <Route
+      path="/register"
+      element={
+        <PublicRoute>
+          <Register />
+        </PublicRoute>
+      }
+    />
+
+    <Route
+      path="/dashboard"
+      element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/appointments"
+      element={
+        <ProtectedRoute>
+          <Appointments />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route path="/" element={<Navigate to="/login" replace />} />
+    <Route path="*" element={<Navigate to="/login" replace />} />
+
+  </Routes>
+
+  <ToastContainer />
+</Router>
+
+
+);
 }
 
 export default App;
