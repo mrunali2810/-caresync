@@ -11,10 +11,10 @@ CREATE TABLE IF NOT EXISTS public.users (
 );
 
 -- Seed Default Admin User: admin@gmail.com / admin123
--- The bcrypt hash of 'admin123' is '$2b$12$8RtfrIoqZ2EpPBH9VA5K5ucEH9qvS.cC7SUnMHnf31udPHOpZUfiW'
+-- The bcrypt hash of 'admin123' is '$2b$12$7kP2K.pD1rVesxJ1Q/J3vuxq2bCjM4Jdsk6N02j.Yc1dG4y5jW3vK'
 INSERT INTO public.users (name, email, password)
-VALUES ('Admin', 'admin@gmail.com', '$2b$12$8RtfrIoqZ2EpPBH9VA5K5ucEH9qvS.cC7SUnMHnf31udPHOpZUfiW')
-ON CONFLICT (email) DO UPDATE SET password = EXCLUDED.password;
+VALUES ('Admin', 'admin@gmail.com', '$2b$12$7kP2K.pD1rVesxJ1Q/J3vuxq2bCjM4Jdsk6N02j.Yc1dG4y5jW3vK')
+ON CONFLICT (email) DO NOTHING;
 
 -- Appointment ID Sequence
 CREATE SEQUENCE IF NOT EXISTS public.appointment_id_seq START WITH 1;

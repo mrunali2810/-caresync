@@ -1,0 +1,470 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hospital Appointment Booking API",
+    "version": "1.0.0",
+    "description": "Production-ready APIs for managing hospital appointments, including JWT authentication and a dashboard overview."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current Environment Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter the JWT token obtained from login. Format: Bearer <token>"
+      }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "admin123"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "b3b24f5a-c21a-4d2a-874e-67fe54faee12"
+              },
+              "name": {
+                "type": "string",
+                "example": "Admin"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "admin@gmail.com"
+              }
+            }
+          }
+        }
+      },
+      "AppointmentRequest": {
+        "type": "object",
+        "required": ["patient_name", "email", "phone", "doctor_name", "appointment_date", "appointment_time"],
+        "properties": {
+          "patient_name": {
+            "type": "string",
+            "example": "Mrunali Patil"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "mrunali@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "9876543210"
+          },
+          "doctor_name": {
+            "type": "string",
+            "example": "Dr. Sharma"
+          },
+          "appointment_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-06-20"
+          },
+          "appointment_time": {
+            "type": "string",
+            "example": "10:30"
+          },
+          "symptoms": {
+            "type": "string",
+            "example": "Fever and cold"
+          }
+        }
+      },
+      "AppointmentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f04c6e94-3746-4c7b-bc43-2287ec2d011f"
+          },
+          "appointment_id": {
+            "type": "string",
+            "example": "HSP001"
+          },
+          "patient_name": {
+            "type": "string",
+            "example": "Mrunali Patil"
+          },
+          "email": {
+            "type": "string",
+            "example": "mrunali@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "9876543210"
+          },
+          "doctor_name": {
+            "type": "string",
+            "example": "Dr. Sharma"
+          },
+          "appointment_date": {
+            "type": "string",
+            "example": "2026-06-20"
+          },
+          "appointment_time": {
+            "type": "string",
+            "example": "10:30"
+          },
+          "symptoms": {
+            "type": "string",
+            "example": "Fever and cold"
+          },
+          "status": {
+            "type": "string",
+            "example": "Pending"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-19T20:30:56Z"
+          }
+        }
+      },
+      "DashboardResponse": {
+        "type": "object",
+        "properties": {
+          "total_appointments": {
+            "type": "integer",
+            "example": 120
+          },
+          "today_appointments": {
+            "type": "integer",
+            "example": 8
+          },
+          "pending_appointments": {
+            "type": "integer",
+            "example": 12
+          },
+          "trends": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "example": "Jun 19"
+                },
+                "count": {
+                  "type": "integer",
+                  "example": 5
+                }
+              }
+            }
+          }
+        }
+      },
+      "MessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Operation Completed Successfully"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/login": {
+      "post": {
+        "summary": "User Login",
+        "description": "Authenticates user credentials against the seeded data and returns a JWT access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/appointments": {
+      "get": {
+        "summary": "Get All Appointments",
+        "description": "Retrieves appointments list with support for pagination, search by patient name, and sorting.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search by patient name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort order by date (asc/desc)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of appointments",
+            "headers": {
+              "X-Total-Count": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Total count of records matching search filter"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AppointmentResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Appointment",
+        "description": "Creates a new patient appointment.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/appointments/{id}": {
+      "put": {
+        "summary": "Update Appointment",
+        "description": "Updates an existing appointment by its UUID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "UUID of the appointment to update",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Appointment not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Appointment",
+        "description": "Deletes an appointment by its UUID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "UUID of the appointment to delete",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Appointment not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/dashboard": {
+      "get": {
+        "summary": "Get Dashboard Statistics",
+        "description": "Retrieve aggregated total, pending, today's count, and 7-day trends.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  }
+}
