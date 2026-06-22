@@ -1,33 +1,8 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.Python
-venv/
 .env
-*.egg-info/
-dist/
-build/
-*.sqlite3
-
-# Node.js / React
+__pycache__/
+*.pyc
+*.pyo
 node_modules/
 frontend/dist/
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-
-# OS files
 .DS_Store
-Thumbs.db
-desktop.ini
-
-# Logs
-*.log
-
-# Misc
-*.tmp
-*.bak
+*.db

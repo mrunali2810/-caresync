@@ -7,6 +7,39 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
+    """
+    Login
+    ---
+    tags:
+      - Auth
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - email
+            - password
+          properties:
+            email:
+              type: string
+              example: admin@gmail.com
+            password:
+              type: string
+              example: admin123
+    responses:
+      200:
+        description: Login Successful
+      400:
+        description: Email and password are required
+      401:
+        description: Invalid password
+      404:
+        description: User not found
+      500:
+        description: Login Failed
+    """
     try:
         data = request.get_json()
         email = data.get("email")
@@ -28,7 +61,6 @@ def login():
 
         user = response.data[0]
 
-        # ✅ Verify password against bcrypt hash
         stored_password = user.get("password", "")
         if not bcrypt.checkpw(password.encode("utf-8"), stored_password.encode("utf-8")):
             return jsonify({"message": "Invalid password"}), 401
